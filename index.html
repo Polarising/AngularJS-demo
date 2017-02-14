@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<title>AngularJS</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/css/bootstrap-combined.min.css">
+</head>
+<body ng-app="myApp">
+	<div>
+      <label>Name:</label>
+      <input type="text" ng-model="yourName" placeholder="Enter a name here">
+      <hr>
+      <h1>Hello {{yourName}}!</h1>
+    </div>
+
+    <div ng-controller="myCtrl">
+		<button ng-click="myFunction()">Click me!</button>
+		<p>{{ count }}</p>
+	</div>
+
+	<div ng-controller="formCtrl">
+		<form novalidate>
+		    First Name:<br>
+		    <input type="text" ng-model="user.firstName"><br>
+		    Last Name:<br>
+		    <input type="text" ng-model="user.lastName">
+		    <br><br>
+		    <button ng-click="save()">SAVE</button>
+	    </form>
+	    <p>form = {{user}}</p>
+	    <p>master = {{master}}</p>
+	</div>
+
+
+
+
+
+
+
+	<script>
+		var app = angular.module('myApp', []);
+		app.controller('myCtrl', function($scope,$http) {
+			$scope.myFunction = function() {
+		        $http.get("http://localhost/~Aaron/github/Laravel-demo/public/api/customer/7")
+				.then(function(response){
+					$scope.count = response.data.id;
+				});
+		    }
+		});
+
+		app.controller('formCtrl', function($scope,$http) {
+		    $scope.master = {firstName: "John", lastName: "Doe"};
+		    $scope.save = function() {
+		        $http({
+					method: 'POST',
+					url: 'http://localhost/~Aaron/github/Laravel-demo/public/api/customer',
+					data: $scope.user,
+					headers: {'Content-Type': 'application/json'}
+				}).then(function(response){
+					$scope.master = {firstName: response.data.firstName, lastName: response.data.lastName};
+				});
+		    };
+		});
+	</script>
+</body>
+</html>
